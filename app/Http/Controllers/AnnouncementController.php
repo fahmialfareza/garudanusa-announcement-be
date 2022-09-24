@@ -19,7 +19,7 @@ class AnnouncementController extends Controller
         // 
     }
 
-    public function ImportFromExcel(Request $request) {
+    public function importFromExcel(Request $request) {
 		$this->validate($request, [
 			'announcement' => 'required|mimes:csv,xls,xlsx'
 		]);
@@ -37,7 +37,7 @@ class AnnouncementController extends Controller
         return response()->json(["status" => "OK", 'data' => $data]);
     }
 
-    public function ResultByPhoneNumber(Request $request, $phone) {
+    public function resultByPhoneNumber(Request $request, $phone) {
         $request['phone'] = $phone;
 
         $this->validate($request, [
@@ -53,7 +53,7 @@ class AnnouncementController extends Controller
         return response()->json(["status" => "OK", 'data' => $data]);
     }
 
-    public function DeleteAllAnnouncement(Request $request) {
+    public function deleteAllAnnouncement(Request $request) {
         Announcement::where("deleted_at", null)->delete();
 
         return response()->json(["status" => "OK", 'data' => ["message" => "Success"]]);

@@ -25,12 +25,20 @@ $router->group(['prefix' => '/api/v1'], function () use ($router) {
     });
 
     $router->group(['prefix' => '/announcement'], function () use ($router) {
-        $router->get('/phone/{phone}', 'AnnouncementController@ResultByPhoneNumber');
+        $router->get('/phone/{phone}', 'AnnouncementController@resultByPhoneNumber');
 
         $router->group(['middleware' => 'auth'], function () use ($router) {
             $router->get('/', 'AnnouncementController@getAllAnnouncements');
-            $router->post('/import', 'AnnouncementController@ImportFromExcel');
-            $router->delete('/delete', 'AnnouncementController@DeleteAllAnnouncement');
+            $router->post('/import', 'AnnouncementController@importFromExcel');
+            $router->delete('/delete', 'AnnouncementController@deleteAllAnnouncement');
+        });
+    });
+
+    $router->group(['prefix' => '/countdown'], function () use ($router) {
+        $router->get('/', 'CountdownController@getCountdown');
+
+        $router->group(['middleware' => 'auth'], function () use ($router) {
+            $router->post('/', 'CountdownController@setCountdown');
         });
     });
 });

@@ -26,5 +26,13 @@ CREATE TABLE announcements (
     deleted_at TIMESTAMP NULL
 );
 
+CREATE TABLE countdowns (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    date DATETIME NOT NULL,
+    created_at TIMESTAMP default now(),
+    updated_at TIMESTAMP default now()
+);
+
 DROP TABLE users;
 DROP TABLE announcements;
+DROP TABLE countdowns;
