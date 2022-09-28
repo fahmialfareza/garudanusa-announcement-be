@@ -73,6 +73,13 @@ class AuthController extends Controller
 
     public function getAllUsers(Request $request) {
         $users = User::all();
+        $count = count($users);
+
+        if ($count > 0) {
+            foreach ($users as $key=>$value) {
+                $value->number = $key + 1;
+            }
+        }
 
         return response()->json(["status" => "OK", 'data' => $users]);
     }

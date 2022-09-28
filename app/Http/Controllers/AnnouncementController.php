@@ -33,8 +33,22 @@ class AnnouncementController extends Controller
 
     public function getAllAnnouncements(Request $request) {
         $data = Announcement::paginate(20);
+        $count = count($data);
+        $start = 1;
+        if ($request->page == null || $request->page == "1") {
+            $start = 1;
+        } else {
+            $start = 20 * ($request->page - 1) + 1;
+        }
 
-        return response()->json(["status" => "OK", 'data' => $data]);
+        if ($count > 0) {
+            foreach ($data as $key=>$value) {
+                $value->number = $start;
+                $start++;
+            }
+        }
+
+        return response()->json(["status" => "OK", 'data' => $data, 'page' => $start]);
     }
 
     public function resultByPhoneNumber(Request $request, $phone) {
