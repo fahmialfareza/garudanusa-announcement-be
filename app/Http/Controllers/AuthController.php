@@ -49,11 +49,11 @@ class AuthController extends Controller
         $user = User::where('username', $request->input("username"))->first();
 
         if (!$user) {
-            abort(401, "Username or password is wrong");
+            abort(401, "Nama pengguna atau kata sandi salah!");
         }
 
         if (Crypt::decrypt($user->password) !=$request->input("password")) {
-            abort(401, "Username or password is wrong");
+            abort(401, "Nama pengguna atau kata sandi salah!");
         }
 
         $token = Auth::login($user);
@@ -65,7 +65,7 @@ class AuthController extends Controller
         $user = User::find($request->user_id);
 
         if (!$user) {
-            abort(404, "User is not found");
+            abort(404, "Pengguna tidak ditemukan!");
         }
 
         return response()->json(["status" => "OK", 'data' => $user]);
@@ -86,21 +86,21 @@ class AuthController extends Controller
 
     public function deleteUser(Request $request, $id) {
         if ($id == 1) {
-            abort(403, "Can not delete super user");
+            abort(403, "Tidak bisa menghapus super user!");
         }
 
         if ($request->user_id == $id) {
-            abort(403, "Can not delete current user");
+            abort(403, "Tidak dapat menghapus user yang sedang login!");
         }
 
         $user = User::find($id);
 
         if (!$user) {
-            abort(404, "User is not found");
+            abort(404, "Pengguna tidak ditemukan!");
         }
 
         $user->delete();
 
-        return response()->json(["status" => "OK", 'data' => ["message" => "Success"]]);
+        return response()->json(["status" => "OK", 'data' => ["message" => "Sukses!"]]);
     }
 }
