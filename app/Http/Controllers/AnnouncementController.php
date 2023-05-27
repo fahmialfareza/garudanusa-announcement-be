@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Announcement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\AnnouncementImport;
 
@@ -24,9 +25,16 @@ class AnnouncementController extends Controller
 			'announcement' => 'required|mimes:csv,xls,xlsx'
 		]);
 
-        $announcement = $request->file('announcement');
+        try {
+            $announcement = $request->file('announcement');
 
-		Excel::import(new AnnouncementImport, $announcement);
+            DB::beginTransaction();
+            Excel::import(new AnnouncementImport, $announcement);
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+            abort(400, "Ada data yang salah!");
+        }
  
 		return response()->json(["status" => "OK", 'data' => ["message" => "Berhasil mengimport data!"]]);
     }
