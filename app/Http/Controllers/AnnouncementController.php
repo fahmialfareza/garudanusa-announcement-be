@@ -25,6 +25,8 @@ class AnnouncementController extends Controller
 			'announcement' => 'required|mimes:csv,xls,xlsx'
 		]);
 
+        $announcement = $request->file('announcement');
+        
         Excel::import(new AnnouncementImport, $announcement);
  
 		return response()->json(["status" => "OK", 'data' => ["message" => "Berhasil mengimport data!"]]);
