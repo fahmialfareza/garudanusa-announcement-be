@@ -62,6 +62,7 @@ $app->singleton(
 $app->configure('app');
 $app->configure('jwt');
 $app->configure('auth');
+$app->configure('cache');
 
 /*
 |--------------------------------------------------------------------------
@@ -101,6 +102,7 @@ $app->routeMiddleware([
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
 $app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
+$app->register(Illuminate\Redis\RedisServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

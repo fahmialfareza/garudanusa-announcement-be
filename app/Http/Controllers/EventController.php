@@ -28,6 +28,9 @@ class EventController extends Controller
             'note' => 'required'
         ]);
 
+        $key = "lastevent";
+        $seconds = 1000;
+
         $lastEvent = Event::orderBy('id', 'DESC')->first();
 
         $event = new Event;
@@ -94,11 +97,28 @@ class EventController extends Controller
         $event->note = $request->input('note');
         $event->save();
 
+        app('redis')->set($key, $event);
+        app('redis')->expire($key, $seconds);
+
         return response()->json(["status" => "OK", 'data' => $event]);
     }
 
     public function getEvent(Request $request) {
+        $key = "lastevent";
+        $seconds = 1000;
+        $event = null;
+
+        if (app('redis')->exists($key)) {
+            $eventData = app("redis")->get($key);
+            $event = json_decode($eventData);
+            return response()->json(["status" => "OK", 'data' => $event]);
+        }
+
         $event = Event::orderBy('id', 'DESC')->first();
+        if ($event) {
+            app('redis')->set($key, $event);
+            app('redis')->expire($key, $seconds);
+        }
 
         return response()->json(["status" => "OK", 'data' => $event]);
     }

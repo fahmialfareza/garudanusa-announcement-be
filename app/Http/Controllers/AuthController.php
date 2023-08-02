@@ -47,12 +47,11 @@ class AuthController extends Controller
 		]);
 
         $user = User::where('username', $request->input("username"))->first();
-
         if (!$user) {
             abort(401, "Nama pengguna atau kata sandi salah!");
         }
 
-        if (Crypt::decrypt($user->password) !=$request->input("password")) {
+        if (Crypt::decrypt($user->password) != $request->input("password")) {
             abort(401, "Nama pengguna atau kata sandi salah!");
         }
 
@@ -62,12 +61,23 @@ class AuthController extends Controller
     }
 
     public function me(Request $request) {
-        $user = User::find($request->user_id);
+        $key = "me:" . $request->user_id;
+        $seconds = 1000;
+        $user = null;
 
-        if (!$user) {
-            abort(404, "Pengguna tidak ditemukan!");
+        if (app('redis')->exists($key)) {
+            $userredis = app("redis")->get($key);
+            $user = json_decode($userredis);
+        } else {
+            $user = User::find($request->user_id);
+            if (!$user) {
+                abort(404, "Pengguna tidak ditemukan!");
+            }
+
+            app('redis')->set($key, $user);
+            app('redis')->expire($key, $seconds);
         }
-
+       
         return response()->json(["status" => "OK", 'data' => $user]);
     }
 

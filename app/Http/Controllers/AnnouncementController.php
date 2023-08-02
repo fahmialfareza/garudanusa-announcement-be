@@ -34,6 +34,8 @@ class AnnouncementController extends Controller
 
     public function updateAnnouncement(Request $request, $id) {
         $request['id'] = $id;
+        $key = 'announcement:' . $id;
+        $seconds = 1000;
 
         $this->validate($request, [
             'phone' => 'required|numeric|digits_between:6,13',
@@ -62,16 +64,30 @@ class AnnouncementController extends Controller
             "total_score" => $request->input("total_score"),
         ]);
 
+        app('redis')->set($key, $data);
+        app('redis')->expire($key, $seconds);
+
         return response()->json(["status" => "OK", 'data' => $data]);
     }
 
     public function getAnnouncement(Request $request, $id) {
         $request['id'] = $id;
+        $key = 'announcement:' . $id;
+        $seconds = 1000;
+
+        if (app('redis')->exists($key)) {
+            $redisdata = app("redis")->get($key);
+            $data = json_decode($redisdata);
+            return response()->json(["status" => "OK", 'data' => $data]);
+        }
         
         $data = Announcement::where('id', $request->input("id"))->first();
         if (!$data) {
             abort(404, "Data tidak ditemukan!");
         }
+
+        app('redis')->set($key, $data);
+        app('redis')->expire($key, $seconds);
 
         return response()->json(["status" => "OK", 'data' => $data]);
     }
@@ -98,16 +114,26 @@ class AnnouncementController extends Controller
 
     public function resultByPhoneNumber(Request $request, $phone) {
         $request['phone'] = $phone;
+        $key = 'result:phone:' . $phone;
+        $seconds = 1000;
 
         $this->validate($request, [
             'phone' => 'required|numeric|digits_between:6,13',
 		]);
 
-        $data = Announcement::where('phone', $request->input("phone"))->first();
+        if (app('redis')->exists($key)) {
+            $redisdata = app("redis")->get($key);
+            $data = json_decode($redisdata);
+            return response()->json(["status" => "OK", 'data' => $data]);
+        }
 
+        $data = Announcement::where('phone', $request->input("phone"))->first();
         if (!$data) {
             abort(404, "Nomor telepon tidak ditemukan!");
         }
+
+        app('redis')->set($key, $data);
+        app('redis')->expire($key, $seconds);
 
         return response()->json(["status" => "OK", 'data' => $data]);
     }
