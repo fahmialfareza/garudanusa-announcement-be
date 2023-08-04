@@ -78,6 +78,7 @@ $app->configure('cache');
 $app->middleware([
     // App\Http\Middleware\ExampleMiddleware::class
     App\Http\Middleware\CorsMiddleware::class,
+    App\Http\Middleware\GzipMiddleware::class,
 ]);
 
 $app->routeMiddleware([
