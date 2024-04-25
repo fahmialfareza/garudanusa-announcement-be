@@ -113,25 +113,25 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'lumen'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'lumen'), '_') . '_database_'),
         ],
 
         'default' => [
-            'scheme' => env('REDIS_SCHEME'),
+            // 'scheme' => env('REDIS_SCHEME'),
             'path' => env('REDIS_PATH'),
-            // 'url' => env('REDIS_URL'),
-            // 'host' => env('REDIS_HOST'),
-            // 'password' => env('REDIS_PASSWORD'),
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST'),
+            'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT'),
             'database' => env('REDIS_DB', '0'),
         ],
 
         'cache' => [
-            'scheme' => env('REDIS_SCHEME'),
+            // 'scheme' => env('REDIS_SCHEME'),
             'path' => env('REDIS_PATH'),
-            // 'url' => env('REDIS_URL'),
-            // 'host' => env('REDIS_HOST'),
-            // 'password' => env('REDIS_PASSWORD'),
+            'url' => env('REDIS_URL'),
+            'host' => env('REDIS_HOST'),
+            'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT'),
             'database' => env('REDIS_CACHE_DB', '1'),
         ],

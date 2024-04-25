@@ -11,6 +11,14 @@ CREATE TABLE users (
     updated_at TIMESTAMP default now()
 );
 
+CREATE TABLE statuses (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    status VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMP default now(),
+    updated_at TIMESTAMP default now()
+);
+
 CREATE TABLE announcements (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
@@ -19,7 +27,7 @@ CREATE TABLE announcements (
     date_of_birth VARCHAR(255) NULL,
     address_from VARCHAR(255) NULL,
     school VARCHAR(255) NULL,
-    result VARCHAR(255) NULL,
+    status_id INT REFERENCES statuses(id),
     total_score INT NULL,
     created_at TIMESTAMP default now(),
     updated_at TIMESTAMP default now(),
@@ -34,15 +42,7 @@ CREATE TABLE events (
     header_footer_name VARCHAR(255) NOT NULL,
     selection_phase VARCHAR(255) NOT NULL,
     date DATETIME NOT NULL,
-    result_pass_text TEXT NOT NULL,
-    result_did_not_pass_text TEXT NOT NULL,
     note TEXT NOT NULL,
     created_at TIMESTAMP default now(),
     updated_at TIMESTAMP default now()
 );
-
-DROP TABLE users;
-
-DROP TABLE announcements;
-
-DROP TABLE events;

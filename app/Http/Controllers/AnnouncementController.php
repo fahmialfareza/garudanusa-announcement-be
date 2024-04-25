@@ -20,31 +20,33 @@ class AnnouncementController extends Controller
         // 
     }
 
-    public function importFromExcel(Request $request) {
-		$this->validate($request, [
-			'announcement' => 'required|mimes:csv,xls,xlsx'
-		]);
+    public function importFromExcel(Request $request)
+    {
+        $this->validate($request, [
+            'announcement' => 'required|mimes:csv,xls,xlsx'
+        ]);
 
         $announcement = $request->file('announcement');
-        
+
         Excel::import(new AnnouncementImport, $announcement);
- 
-		return response()->json(["status" => "OK", 'data' => ["message" => "Berhasil mengimport data!"]]);
+
+        return response()->json(["status" => "OK", 'data' => ["message" => "Berhasil mengimport data!"]]);
     }
 
-    public function updateAnnouncement(Request $request, $id) {
+    public function updateAnnouncement(Request $request, $id)
+    {
         $request['id'] = $id;
         $key = 'announcement:' . $id;
         $seconds = 1000;
 
         $this->validate($request, [
-            'phone' => 'required|numeric|digits_between:6,13',
+            'phone' => 'required',
             'name' => 'required',
             'city_of_birth' => 'required',
             'date_of_birth' => 'required',
             'address_from' => 'required',
             'school' => 'required',
-            'result' => 'required',
+            'status' => 'required',
             'total_score' => 'required|integer',
         ]);
 
@@ -60,7 +62,7 @@ class AnnouncementController extends Controller
             "date_of_birth" => $request->input("date_of_birth"),
             "address_from" => $request->input("address_from"),
             "school" => $request->input("school"),
-            "result" => $request->input("result"),
+            "status" => $request->input("status"),
             "total_score" => $request->input("total_score"),
         ]);
 
@@ -70,7 +72,8 @@ class AnnouncementController extends Controller
         return response()->json(["status" => "OK", 'data' => $data]);
     }
 
-    public function getAnnouncement(Request $request, $id) {
+    public function getAnnouncement(Request $request, $id)
+    {
         $request['id'] = $id;
         $key = 'announcement:' . $id;
         $seconds = 1000;
@@ -80,7 +83,7 @@ class AnnouncementController extends Controller
             $data = json_decode($redisdata);
             return response()->json(["status" => "OK", 'data' => $data]);
         }
-        
+
         $data = Announcement::where('id', $request->input("id"))->first();
         if (!$data) {
             abort(404, "Data tidak ditemukan!");
@@ -92,7 +95,8 @@ class AnnouncementController extends Controller
         return response()->json(["status" => "OK", 'data' => $data]);
     }
 
-    public function getAllAnnouncements(Request $request) {
+    public function getAllAnnouncements(Request $request)
+    {
         $data = Announcement::paginate(20);
         $count = count($data);
         $start = 1;
@@ -103,7 +107,7 @@ class AnnouncementController extends Controller
         }
 
         if ($count > 0) {
-            foreach ($data as $key=>$value) {
+            foreach ($data as $key => $value) {
                 $value->number = $start;
                 $start++;
             }
@@ -112,14 +116,15 @@ class AnnouncementController extends Controller
         return response()->json(["status" => "OK", 'data' => $data, 'page' => $start]);
     }
 
-    public function resultByPhoneNumber(Request $request, $phone) {
+    public function resultByPhoneNumber(Request $request, $phone)
+    {
         $request['phone'] = $phone;
         $key = 'result:phone:' . $phone;
         $seconds = 1000;
 
         $this->validate($request, [
-            'phone' => 'required|numeric|digits_between:6,13',
-		]);
+            'phone' => 'required',
+        ]);
 
         if (app('redis')->exists($key)) {
             $redisdata = app("redis")->get($key);
@@ -127,7 +132,9 @@ class AnnouncementController extends Controller
             return response()->json(["status" => "OK", 'data' => $data]);
         }
 
-        $data = Announcement::where('phone', $request->input("phone"))->first();
+        $data = Announcement::where('phone', $request->input("phone"))
+            ->join('statuses', 'announcements.status_id', '=', 'statuses.id')
+            ->first();
         if (!$data) {
             abort(404, "Nomor telepon tidak ditemukan!");
         }
@@ -138,7 +145,8 @@ class AnnouncementController extends Controller
         return response()->json(["status" => "OK", 'data' => $data]);
     }
 
-    public function deleteAllAnnouncement(Request $request) {
+    public function deleteAllAnnouncement(Request $request)
+    {
         Announcement::where("deleted_at", null)->delete();
 
         return response()->json(["status" => "OK", 'data' => ["message" => "Sukses!"]]);

@@ -43,4 +43,14 @@ $router->group(['prefix' => '/api/v1'], function () use ($router) {
             $router->post('/', 'EventController@setEvent');
         });
     });
+
+    $router->group(['prefix' => 'status'], function () use ($router) {
+        $router->group(['middleware' => 'auth'], function () use ($router) {
+            $router->get('/', 'StatusController@getAllStatuses');
+            $router->get('/{id}', 'StatusController@getStatus');
+            $router->post("/", "StatusController@createStatus");
+            $router->put("/{id}", "StatusController@updateStatus");
+            $router->delete("/{id}", "StatusController@destroyStatus");
+        });
+    });
 });
