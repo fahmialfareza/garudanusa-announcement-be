@@ -17,14 +17,13 @@ class EventController extends Controller
         // 
     }
 
-    public function setEvent(Request $request) {
+    public function setEvent(Request $request)
+    {
         $this->validate($request, [
             'countdown' => 'required|date',
             'event_name' => 'required',
             'header_footer_name' => 'required',
             'selection_phase' => 'required',
-            'result_pass_text' => 'required',
-            'result_did_not_pass_text' => 'required',
             'note' => 'required'
         ]);
 
@@ -35,7 +34,7 @@ class EventController extends Controller
 
         $event = new Event;
 
-        if ($request->hasFile('desktop_photo')) { 
+        if ($request->hasFile('desktop_photo')) {
             $file_size = $request->file('desktop_photo')->getSize();
             if ($file_size > 1024000) {
                 abort(400, "Background Desktop tidak boleh lebih dari 1 MB!");
@@ -55,14 +54,14 @@ class EventController extends Controller
                 }
             } else {
                 abort(400, "Background Desktop harus berupa gambar!");
-            }            
+            }
         } else {
             if ($lastEvent) {
                 $event->desktop_photo = $lastEvent->desktop_photo;
             }
         }
 
-        if ($request->hasFile('mobile_photo')) { 
+        if ($request->hasFile('mobile_photo')) {
             $file_size = $request->file('mobile_photo')->getSize();
             if ($file_size > 1024000) {
                 abort(400, "Background Mobile tidak boleh lebih dari 1 MB!");
@@ -92,8 +91,6 @@ class EventController extends Controller
         $event->event_name = $request->input("event_name");
         $event->header_footer_name = $request->input("header_footer_name");
         $event->selection_phase = $request->input("selection_phase");
-        $event->result_pass_text = $request->input("result_pass_text");
-        $event->result_did_not_pass_text = $request->input("result_did_not_pass_text");
         $event->note = $request->input('note');
         $event->save();
 
@@ -103,7 +100,8 @@ class EventController extends Controller
         return response()->json(["status" => "OK", 'data' => $event]);
     }
 
-    public function getEvent(Request $request) {
+    public function getEvent(Request $request)
+    {
         $key = "lastevent";
         $seconds = 1000;
         $event = null;
