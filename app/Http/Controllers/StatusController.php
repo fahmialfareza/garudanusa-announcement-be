@@ -41,6 +41,7 @@ class StatusController extends Controller
 
         $status->status = $request->input("status");
         $status->message = $request->input("message");
+        $status->color = $request->input("color");
         $status->save();
 
         $key = "status:" . $status->id;
@@ -63,6 +64,7 @@ class StatusController extends Controller
 
         $status->status = $request->input('status');
         $status->message = $request->input('message');
+        $status->color = $request->input("color");
         $status->save();
 
         $key = "status:" . $status->id;
