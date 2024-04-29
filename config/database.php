@@ -127,11 +127,11 @@ return [
         ],
 
         'cache' => [
-            // 'scheme' => env('REDIS_SCHEME'),
+            'scheme' => env('REDIS_SCHEME'),
             'path' => env('REDIS_PATH'),
-            'url' => env('REDIS_URL'),
-            'host' => env('REDIS_HOST'),
-            'password' => env('REDIS_PASSWORD'),
+            // 'url' => env('REDIS_URL'), 
+            // 'host' => env('REDIS_HOST'),
+            // 'password' => env('REDIS_PASSWORD'),
             'port' => env('REDIS_PORT'),
             'database' => env('REDIS_CACHE_DB', '1'),
         ],
