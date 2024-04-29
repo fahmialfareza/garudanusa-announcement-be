@@ -62,7 +62,7 @@ class AnnouncementController extends Controller
             "date_of_birth" => $request->input("date_of_birth"),
             "address_from" => $request->input("address_from"),
             "school" => $request->input("school"),
-            "status_id" => $request->input("status"),
+            "status_id" => $request->input("status_id"),
             "total_score" => $request->input("total_score"),
         ]);
 
