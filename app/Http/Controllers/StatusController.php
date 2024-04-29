@@ -33,7 +33,8 @@ class StatusController extends Controller
     {
         $this->validate($request, [
             'status' => 'required',
-            'message' => 'required'
+            'message' => 'required',
+            'color' => 'required'
         ]);
 
         $status = new Status;
@@ -54,7 +55,8 @@ class StatusController extends Controller
     {
         $this->validate($request, [
             'status' => 'required',
-            'message' => 'required'
+            'message' => 'required',
+            'color' => 'required'
         ]);
 
         $status = Status::where('id', $id)->first();
