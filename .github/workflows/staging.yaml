@@ -13,6 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create .env
+        run: |
+          SECRETS="${{ secrets.ENV_STAGING }}"
+          echo "$SECRETS" | tr ';' '\n' >> .env
+
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -23,12 +28,15 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --ignore-platform-reqs
 
+      - name: Install SSH Client
+        run: sudo apt-get install openssh-client
+
       - name: Upload files via SFTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: sftp://${{ secrets.SFTP_SERVER }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          port: ${{ secrets.SFTP_PORT }}
-          local-dir: ./
-          server-dir: /home/garudanu/api-staging.garudanusa.id/ # Set the remote directory
+        run: |
+          sftp -oPort=${{ secrets.SFTP_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_SERVER }} <<EOF
+          cd /home/garudanu/api-staging.garudanusa.id/
+          put -r ./*
+          bye
+          EOF
+        env:
+          SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
