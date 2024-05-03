@@ -31,12 +31,12 @@ jobs:
       - name: Install SSH Client
         run: sudo apt-get install openssh-client
 
-      - name: Upload files via SFTP
-        run: |
-          sftp -oPort=${{ secrets.SFTP_PORT }} -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_SERVER }} <<EOF
-          cd /home/garudanu/api-staging.garudanusa.id/
-          put -r ./*
-          bye
-          EOF
-        env:
-          SFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+      - name: Upload files via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.SFTP_SERVER }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          password: ${{ secrets.SFTP_PASSWORD }}
+          port: ${{ secrets.SFTP_PORT }}
+          local-dir: ./
+          server-dir: /home/garudanu/api-staging.garudanusa.id/
