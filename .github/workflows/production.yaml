@@ -1,9 +1,7 @@
-name: Deploy PHP Application via FTP (Staging)
+name: Deploy PHP Application via FTP (Production)
 
 on:
-  push:
-    branches:
-      - main # Adjust this to match the branches you want to deploy from
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -15,7 +13,7 @@ jobs:
 
       - name: Create .env
         run: |
-          SECRETS="${{ secrets.ENV_STAGING }}"
+          SECRETS="${{ secrets.ENV_PRODUCTION }}"
           echo "$SECRETS" | tr ';' '\n' >> .env
 
       - name: Set up PHP
@@ -39,4 +37,4 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           port: ${{ secrets.SFTP_PORT }}
           local-dir: ./
-          server-dir: /home/garudanu/api-staging.garudanusa.id/
+          server-dir: /home/garudanu/api-announcements.garudanusa.id/
