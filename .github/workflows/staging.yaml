@@ -39,4 +39,4 @@ jobs:
           password: ${{ secrets.SFTP_PASSWORD }}
           port: ${{ secrets.SFTP_PORT }}
           local-dir: ./
-          server-dir: /home/garudanu/api-staging.garudanusa.id/
+          server-dir: ./api-staging.garudanusa.id/

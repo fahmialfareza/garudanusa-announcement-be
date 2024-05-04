@@ -97,15 +97,9 @@ class AnnouncementController extends Controller
 
     public function getAllAnnouncements(Request $request)
     {
-        $data = Announcement::paginate(20);
+        $data = Announcement::all();
         $count = count($data);
         $start = 1;
-        if ($request->page == null || $request->page == "1") {
-            $start = 1;
-        } else {
-            $start = 20 * ($request->page - 1) + 1;
-        }
-
         if ($count > 0) {
             foreach ($data as $key => $value) {
                 $value->number = $start;
@@ -113,7 +107,7 @@ class AnnouncementController extends Controller
             }
         }
 
-        return response()->json(["status" => "OK", 'data' => $data, 'page' => $start]);
+        return response()->json(["status" => "OK", 'data' => $data]);
     }
 
     public function resultByPhoneNumber(Request $request, $phone)
