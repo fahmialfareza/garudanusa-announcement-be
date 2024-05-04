@@ -25,8 +25,8 @@ jobs:
           extensions: mbstring, xml, pdo_mysql, mysqli, gd, imagick, redis # Add any other extensions you need
           tools: composer:v2 # Specify Composer version if necessary
 
-      - name: Install Composer dependencies
-        run: composer install --ignore-platform-reqs
+      # - name: Install Composer dependencies
+      #   run: composer install --ignore-platform-reqs
 
       - name: Install SSH Client
         run: sudo apt-get install openssh-client
