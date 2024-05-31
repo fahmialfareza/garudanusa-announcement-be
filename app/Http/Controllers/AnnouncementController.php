@@ -84,7 +84,7 @@ class AnnouncementController extends Controller
             return response()->json(["status" => "OK", 'data' => $data]);
         }
 
-        $data = Announcement::where('id', $request->input("id"))->first();
+        $data = Announcement::where('id', $request->input("id"))->with('status')->first();
         if (!$data) {
             abort(404, "Data tidak ditemukan!");
         }
@@ -97,7 +97,7 @@ class AnnouncementController extends Controller
 
     public function getAllAnnouncements(Request $request)
     {
-        $data = Announcement::all();
+        $data = Announcement::with('status')->get();
         $count = count($data);
         $start = 1;
         if ($count > 0) {
@@ -127,7 +127,7 @@ class AnnouncementController extends Controller
         }
 
         $data = Announcement::where('phone', $request->input("phone"))
-            ->join('statuses', 'announcements.status_id', '=', 'statuses.id')
+            ->with('status')
             ->first();
         if (!$data) {
             abort(404, "Nomor telepon tidak ditemukan!");
